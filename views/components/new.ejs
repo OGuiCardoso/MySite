@@ -1,0 +1,29 @@
+<% layout('layout/boilerplate') %>
+
+    <div class="row my-5">
+        <div class="col-md-6 offset-md-3">
+            <form action="/projects" method="post">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Project title</label>
+                    <input id="title" type="text" class="form-control" name="title">
+                </div>
+                <div class="mb-3">
+                    <label for="link" class="form-label">Link</label>
+                    <input id="link" type="text" class="form-control" name="link">
+                </div>
+                <div class="mb-3">
+                    <label for="img" class="form-label">Image</label>
+                    <input id="img" type="url" class="form-control" name="image">
+                </div>
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" id="floatingTextarea" name="description"></textarea>
+                    <label for="floatingTextarea">Project description</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" id="floatingTextarea2" style="height: 100px" name="text"></textarea>
+                    <label for="floatingTextarea2">Text</label>
+                </div>
+                <button type="submit" class="btn btn-primary mb-4">Submmit</button>
+            </form>
+        </div>
+    </div>

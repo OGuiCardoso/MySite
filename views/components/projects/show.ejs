@@ -18,6 +18,10 @@
             <p>
                 <%= project.text %>
             </p>
-            <a href="#" class="btn btn-primary">view</a>
+            <a href="#" class="btn btn-primary mb-3">view</a>
+            <% if(user) {%>
+                <form action="/projects/<%=project._id  %>?_method=DELETE" method="POST"><button
+                        class="btn btn-danger">Delete</button></form>
+                <% } %>
         </section>
     </div>

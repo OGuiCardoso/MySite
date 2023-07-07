@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import Project from "./models/projects.js";
 
 async function conectDb() {
-    mongoose.connect('mongodb://127.0.0.1:27017/mysite')
+    await mongoose.connect('mongodb://127.0.0.1:27017/mysite')
     console.log('Data base connected')
 }
 conectDb().catch(e => console.log(e))

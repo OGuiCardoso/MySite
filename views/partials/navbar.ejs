@@ -1,27 +1,45 @@
+<style>
+    .nav-link {
+        margin-right: auto;
+        border-bottom: 0.25rem solid transparent;
+        width: 8rem;
+    }
+
+    .nav-link:hover {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .nav-link.active {
+        color: #974fe9 !important;
+        border-radius: 10px;
+    }
+</style>
 <nav class="navbar sticky-top navbar-expand-lg bg-dark" data-bs-theme="dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Navbar</a>
+        <a class="navbar-brand" href="#">Guilherme CM</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
             aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav">
-                <a class="nav-link active" aria-current="page" href="/">Home</a>
-                <a class="nav-link" href="/aboutme">About me</a>
-                <a class="nav-link" href="/projects">Projects</a>
-                <a class="nav-link" href="/login">Login</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link <%=data.url.includes('/aboutme') ? 'active' : ""%>" href="/aboutme">AboutMe</a>
+                <a class="nav-link <%=data.url !== '/admin/projects/new' && data.url.includes('/projects') ? 'active'
+                    : "" %>" href="/projects">Projects</a>
 
+                <% if(user){ %>
 
-            </div>
-            <% if(user){ %>
-                <div class="navbar-nav ms-auto">
-                    <a class="nav-link" href="/admin/projects/new">New pojects</a>
+                    <a class="nav-link <%=data.url.includes('/new') ? 'active' : ""%>" href="/admin/projects/new">New
+                        pojects</a>
                     <form action="/logout" method="post">
-                        <button class="nav-link"> Logout</button>
+                        <button class="nav-link "> Logout</button>
                     </form>
-                </div>
-                <% } %>
+
+                    <% } else{%>
+                        <a class="nav-link <%=data.url.includes('/login') ? 'active' : ""%>" href="/login">Login</a>
+                        <% } %>
+            </div>
         </div>
     </div>
 </nav>

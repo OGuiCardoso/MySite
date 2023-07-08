@@ -13,19 +13,19 @@ import User from "./models/user.js";
 
 async function conectDb() {
     await mongoose.connect('mongodb://127.0.0.1:27017/mysite');
-    console.log('Data base connected');
 };
 conectDb().catch(e => console.log(e));
 
 const app = express();
 
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+app.use(express.static(path.join(__dirname, 'public')))
 app.engine('ejs', engine);
 app.set('view engine', 'ejs')
 app.set('views', path.join(__dirname, 'views'))
 
-app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'))
 
@@ -64,34 +64,48 @@ app.get('/', (req, res) => {
 });
 
 app.get('/aboutme', (req, res) => {
-    res.render('components/index')
+    const data = {
+        url: req.path
+    }
+    res.render('components/index', { data })
 });
-
-
 
 
 //Projects routes
 app.get('/admin/projects/new', isloggedIn, (req, res) => {
-    res.render('components/projects/new')
+    const data = {
+        url: req.path
+    }
+    console.log(data.url)
+    res.render('components/projects/new', { data })
 });
 app.post('/projects', isloggedIn, catchAsync(async (req, res) => {
     const project = new Project(req.body);
     await project.save();
-    res.redirect('/projects')
+    res.redirect('/projects',)
 }));
 app.get('/projects/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     const project = await Project.findById(id);
-    res.render('components/projects/show', { project });
+    const data = {
+        url: req.path
+    }
+    res.render('components/projects/show', { project, data });
 }));
 app.get('/projects', catchAsync(async (req, res) => {
     const projects = await Project.find({});
-    res.render('components/projects/index', { projects });
+    const data = {
+        url: req.path
+    }
+    res.render('components/projects/index', { projects, data });
 }));
 app.get('/admin/projects/:id/edit', catchAsync(async (req, res) => {
     const { id } = req.params;
     const project = await Project.findById(id);
-    res.render('components/projects/edit', { project })
+    const data = {
+        url: req.path
+    }
+    res.render('components/projects/edit', { project, data })
 }));
 app.put('/projects/:id', isloggedIn, catchAsync(async (req, res) => {
     const { id } = req.params;
@@ -105,10 +119,12 @@ app.delete('/projects/:id', isloggedIn, catchAsync(async (req, res) => {
 }))
 
 
-
 //Login route
 app.get('/login', (req, res) => {
-    res.render('components/user/login')
+    const data = {
+        url: req.path
+    }
+    res.render('components/user/login', { data })
 })
 app.post('/login', catchAsync(async (req, res) => {
     const { username, password } = req.body;
@@ -125,6 +141,10 @@ app.post('/login', catchAsync(async (req, res) => {
 app.post('/logout', (req, res) => {
     req.session.user = false
     res.redirect('/projects')
+})
+
+app.all('*', (req, res) => {
+    res.send('page not found')
 })
 
 app.use((err, req, res, next) => {

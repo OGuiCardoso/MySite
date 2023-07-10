@@ -8,7 +8,6 @@ const projectSchema = new Schema({
     },
     link: {
         type: String,
-        required: true
     },
     description: {
         type: String,
@@ -18,9 +17,23 @@ const projectSchema = new Schema({
         type: String,
         required: true
     },
-    image: {
+    technologies: {
+        type: String,
+        Required: true
+    },
+    repository: {
         type: String,
         required: true
+    },
+    image: {
+        url: {
+            type: String,
+            required: true
+        },
+        filename: {
+            type: String,
+            required: true
+        }
     }
 })
 

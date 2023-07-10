@@ -1,3 +1,10 @@
+import dotenv from 'dotenv';
+
+if (process.env.NODE_ENV !== "production") {
+    dotenv.config();
+}
+
+
 import express from "express";
 import path from "path";
 import { fileURLToPath } from 'url';
@@ -7,6 +14,8 @@ import mongoose from "mongoose";
 import methodOverride from 'method-override';
 import session from "express-session";
 import bcrypt from 'bcrypt';
+import multer from 'multer';
+import { storage } from './cloudinary/index.js';
 
 import Project from "./models/projects.js";
 import User from "./models/user.js";
@@ -17,7 +26,7 @@ async function conectDb() {
 conectDb().catch(e => console.log(e));
 
 const app = express();
-
+const upload = multer({ storage })
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -38,25 +47,25 @@ app.use(session({
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
-}))
+}));
 
 app.use((req, res, next) => {
     res.locals.user = req.session.user
     next()
-})
+});
 //middleware session
 function isloggedIn(req, res, next) {
     if (!req.session.user) {
         return res.redirect('/projects')
     }
     next();
-}
+};
 //catch async
 const catchAsync = (fn) => {
     return function (req, res, next) {
         fn(req, res, next).catch(next)
-    }
-}
+    };
+};
 
 
 app.get('/', (req, res) => {
@@ -70,18 +79,19 @@ app.get('/aboutme', (req, res) => {
     res.render('components/index', { data })
 });
 
-
 //Projects routes
 app.get('/admin/projects/new', isloggedIn, (req, res) => {
     const data = {
         url: req.path
     }
-    console.log(data.url)
     res.render('components/projects/new', { data })
 });
-app.post('/projects', isloggedIn, catchAsync(async (req, res) => {
+app.post('/projects', isloggedIn, upload.single('image'), catchAsync(async (req, res) => {
     const project = new Project(req.body);
+    project.image.url = req.file.path;
+    project.image.filename = req.file.filename
     await project.save();
+    console.log(req.body)
     res.redirect('/projects',)
 }));
 app.get('/projects/:id', catchAsync(async (req, res) => {

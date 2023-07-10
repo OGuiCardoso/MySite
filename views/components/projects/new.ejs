@@ -2,26 +2,35 @@
 
     <div class="row my-5">
         <div class="col-md-6 offset-md-3">
-            <form action="/projects" method="post">
+            <form action="/projects" method="post" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="title" class="form-label">Project title</label>
                     <input id="title" type="text" class="form-control" name="title">
+                </div>
+                <div class="mb-3">
+                    <label for="img" class="form-label">Image</label>
+                    <input id="img" type="file" class="form-control" name="image">
+                </div>
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" id="description" style="height: 100px" name="description"></textarea>
+                    <label for="description">Description</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" id="technologies" style="height: 100px"
+                        name="technologies"></textarea>
+                    <label for="technologies">Technologies</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" id="text" style="height: 100px" name="text"></textarea>
+                    <label for="text">Text</label>
                 </div>
                 <div class="mb-3">
                     <label for="link" class="form-label">Link</label>
                     <input id="link" type="text" class="form-control" name="link">
                 </div>
                 <div class="mb-3">
-                    <label for="img" class="form-label">Image</label>
-                    <input id="img" type="url" class="form-control" name="image">
-                </div>
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" id="floatingTextarea" name="description"></textarea>
-                    <label for="floatingTextarea">Project description</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <textarea class="form-control" id="floatingTextarea2" style="height: 100px" name="text"></textarea>
-                    <label for="floatingTextarea2">Text</label>
+                    <label for="repository" class="form-label">Git repository</label>
+                    <input id="repository" type="text" class="form-control" name="repository">
                 </div>
                 <button type="submit" class="btn btn-primary mb-4">Submmit</button>
             </form>

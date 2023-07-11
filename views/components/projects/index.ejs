@@ -1,8 +1,15 @@
 <% layout('layout/boilerplate') %>
+    <div class=" my-5">
+        <h1>Projects page</h1>
+    </div>
+    <section class="mb-5">
+        <p>Welcome to my project page! Here, you will discover a compilation of my projects that I have passionately
+            worked on. I invite you to explore each one of them and delve into their accompanying GitHub repositories,
+            where you can explore the code I have meticulously crafted. Feel free to browse, learn, and get inspired!
+        </p>
+    </section>
+    <div class=" row row-cols-2 justify-content-between ">
 
-    <h1>projects page</h1>
-
-    <div class=" row row-cols-2 justify-content-center">
         <% for(let p of projects){ %>
             <div class="card col mx-3 my-3" style="width: 18rem;">
                 <img src="<%= p.image.url %>" class="card-img-top" alt="...">

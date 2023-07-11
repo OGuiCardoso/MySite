@@ -25,7 +25,7 @@
             <div class="navbar-nav ms-auto">
                 <a class="nav-link" href="/">Home</a>
                 <a class="nav-link <%=data.url.includes('/aboutme') ? 'active' : ""%>" href="/aboutme">AboutMe</a>
-                <a class="nav-link <%=data.url !== '/admin/projects/new' && data.url.includes('/projects') ? 'active'
+                <a class="nav-link <%=data.url !== '/projects/new' && data.url.includes('/projects') ? 'active'
                     : "" %>" href="/projects">Projects</a>
 
                 <% if(user){ %>

@@ -1,12 +1,12 @@
 .background-image {
     height: 100vh;
     background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-        url("https://images.unsplash.com/photo-1517336714731-489689fd1ca8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHByb2dyYW1pbmd8ZW58MHx8MHx8fDI%3D&auto=format&fit=crop&w=500&q=60");
+        url("https://images.unsplash.com/photo-1422207258071-70754198c4a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTE5fHxob21lJTIwcGFnZSUyMGJhY2tncm91bmR8ZW58MHx8MHx8fDI%3D&auto=format&fit=crop&w=500&q=60");
     background-size: cover;
-    background-position: center;
+    background-position: bottom;
     text-shadow: 0 0.05rem 0.1rem rgba(0, 0, 0, 0.5);
     box-shadow: inset 0 0 5rem rgba(0, 0, 0, 0.5);
-    filter: blur(3px);
+    filter: blur(2px);
 
 }
 

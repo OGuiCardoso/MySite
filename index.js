@@ -4,7 +4,6 @@ if (process.env.NODE_ENV !== "production") {
     dotenv.config();
 }
 
-
 import express from "express";
 import path from "path";
 import { fileURLToPath } from 'url';
@@ -13,12 +12,12 @@ import engine from 'ejs-mate';
 import mongoose from "mongoose";
 import methodOverride from 'method-override';
 import session from "express-session";
-import bcrypt from 'bcrypt';
-import multer from 'multer';
-import { storage } from './cloudinary/index.js';
-
-import Project from "./models/projects.js";
-import User from "./models/user.js";
+import adminRoutes from './routes/admin.js';
+import projectRoutes from './routes/preojects.js'
+import loginRoutes from './routes/login.js';
+import ExpressError from './utils/ExpressError.js';
+import helmet from 'helmet';
+import mongoSanitize from 'express-mongo-sanitize';
 
 async function conectDb() {
     await mongoose.connect('mongodb://127.0.0.1:27017/mysite');
@@ -26,7 +25,6 @@ async function conectDb() {
 conectDb().catch(e => console.log(e));
 
 const app = express();
-const upload = multer({ storage })
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -39,6 +37,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'))
 
 app.use(session({
+    name: 'rvdibm',
     secret: 'thisshouldbeabettersecret',
     resave: false,
     saveUninitialized: true,
@@ -48,25 +47,40 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }));
+// const scriptSrcUrls = [
+//     "https://stackpath.bootstrapcdn.com",
+//     "https://kit.fontawesome.com",
+//     "https://cdn.jsdelivr.net/",
+// ];
+// const styleSrcUrls = [
+//     "https://kit-free.fontawesome.com",
+//     "https://stackpath.bootstrapcdn.com",
+
+//     "https://cdn.jsdelivr.net/"
+// ];
+app.use(mongoSanitize());
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            // defaultSrc: [],
+            // workerSrc: ["'self'", "blob:"],
+            // childSrc: ["blob:"],
+            // objectSrc: [],
+            imgSrc: [
+                "'self'",
+                "blob:",
+                "data:",
+                "https://res.cloudinary.com/dbu0iwr3h/",
+                "https://images.unsplash.com",
+            ],
+        },
+    })
+);
 
 app.use((req, res, next) => {
     res.locals.user = req.session.user
     next()
 });
-//middleware session
-function isloggedIn(req, res, next) {
-    if (!req.session.user) {
-        return res.redirect('/projects')
-    }
-    next();
-};
-//catch async
-const catchAsync = (fn) => {
-    return function (req, res, next) {
-        fn(req, res, next).catch(next)
-    };
-};
-
 
 app.get('/', (req, res) => {
     res.render('components/home')
@@ -76,93 +90,31 @@ app.get('/aboutme', (req, res) => {
     const data = {
         url: req.path
     }
-    res.render('components/index', { data })
+    res.render('components/aboutMe', { data })
 });
 
-//Projects routes
-app.get('/admin/projects/new', isloggedIn, (req, res) => {
-    const data = {
-        url: req.path
-    }
-    res.render('components/projects/new', { data })
-});
-app.post('/projects', isloggedIn, upload.single('image'), catchAsync(async (req, res) => {
-    const project = new Project(req.body);
-    project.image.url = req.file.path;
-    project.image.filename = req.file.filename
-    await project.save();
-    console.log(req.body)
-    res.redirect('/projects',)
-}));
-app.get('/projects/:id', catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const project = await Project.findById(id);
-    const data = {
-        url: req.path
-    }
-    res.render('components/projects/show', { project, data });
-}));
-app.get('/projects', catchAsync(async (req, res) => {
-    const projects = await Project.find({});
-    const data = {
-        url: req.path
-    }
-    res.render('components/projects/index', { projects, data });
-}));
-app.get('/admin/projects/:id/edit', catchAsync(async (req, res) => {
-    const { id } = req.params;
-    const project = await Project.findById(id);
-    const data = {
-        url: req.path
-    }
-    res.render('components/projects/edit', { project, data })
-}));
-app.put('/projects/:id', isloggedIn, catchAsync(async (req, res) => {
-    const { id } = req.params;
-    await Project.findByIdAndUpdate(id, req.body);
-    res.redirect(`/projects/${id}`);
-}))
-app.delete('/projects/:id', isloggedIn, catchAsync(async (req, res) => {
-    const { id } = req.params;
-    await Project.findByIdAndDelete(id);
-    res.redirect('/projects');
-}))
+app.use('/admin', adminRoutes);
 
+app.use('/projects', projectRoutes);
 
-//Login route
-app.get('/login', (req, res) => {
-    const data = {
-        url: req.path
-    }
-    res.render('components/user/login', { data })
-})
-app.post('/login', catchAsync(async (req, res) => {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username: username });
-    if (!user) {
-        return res.redirect('/login')
-    }
-    const isValid = await bcrypt.compare(password, user.password);
-    if (isValid) {
-        req.session.user = true
-    }
-    res.redirect('/projects')
-}))
+app.use('/login', loginRoutes);
+
 app.post('/logout', (req, res) => {
     req.session.user = false
     res.redirect('/projects')
 })
 
-app.all('*', (req, res) => {
-    res.send('page not found')
+app.all('*', (req, res, next) => {
+    next(new ExpressError('Page not found', 404))
 })
 
 app.use((err, req, res, next) => {
-    const { status = 500, message } = err;
-    res.status(status).send(message)
+    const status = err.status ? err.status : 500;
+    const data = {
+        url: req.path,
+    }
+    res.status(status).render('error', { data })
 })
-
-
 
 const port = 3000;
 app.listen(port, () => {

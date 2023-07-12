@@ -18,9 +18,13 @@ import loginRoutes from './routes/login.js';
 import ExpressError from './utils/ExpressError.js';
 import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
+import MongoDbStore from 'connect-mongo';
+
+const dbUrl = process.env.MONGO_URL || 'mongodb://127.0.0.1:27017/mysite'
 
 async function conectDb() {
-    await mongoose.connect('mongodb://127.0.0.1:27017/mysite');
+    await mongoose.connect(dbUrl);
+    console.log('Data base connected')
 };
 conectDb().catch(e => console.log(e));
 
@@ -36,9 +40,21 @@ app.set('views', path.join(__dirname, 'views'))
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride('_method'))
 
+const store = MongoDbStore.create({
+    mongoUrl: dbUrl,
+    touchAfter: 24 * 60 * 60,
+    crypto: {
+        secret: process.env.SECRET
+    }
+})
+store.on('error', function (e) {
+    console.log('SESSION STORE ERROR', e)
+})
+
 app.use(session({
+    store: store,
     name: 'rvdibm',
-    secret: 'thisshouldbeabettersecret',
+    secret: process.env.SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -47,25 +63,10 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }));
-// const scriptSrcUrls = [
-//     "https://stackpath.bootstrapcdn.com",
-//     "https://kit.fontawesome.com",
-//     "https://cdn.jsdelivr.net/",
-// ];
-// const styleSrcUrls = [
-//     "https://kit-free.fontawesome.com",
-//     "https://stackpath.bootstrapcdn.com",
-
-//     "https://cdn.jsdelivr.net/"
-// ];
 app.use(mongoSanitize());
 app.use(
     helmet.contentSecurityPolicy({
         directives: {
-            // defaultSrc: [],
-            // workerSrc: ["'self'", "blob:"],
-            // childSrc: ["blob:"],
-            // objectSrc: [],
             imgSrc: [
                 "'self'",
                 "blob:",

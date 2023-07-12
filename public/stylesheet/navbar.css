@@ -1,0 +1,9 @@
+.nav-link {
+    margin-right: auto;
+    border-bottom: 0.25rem solid transparent;
+    width: 8rem;
+}
+
+.nav-link:hover {
+    color: rgba(255, 255, 255, 0.942);
+}

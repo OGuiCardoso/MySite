@@ -2,3 +2,8 @@ body {
     background-color: rgba(0, 0, 0, 0.886);
     color: whitesmoke
 }
+
+.tech-item {
+    margin-left: 1rem;
+    line-height: 6px;
+}

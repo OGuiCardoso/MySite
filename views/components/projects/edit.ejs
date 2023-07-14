@@ -17,14 +17,14 @@
                     <label for="description">Project description</label>
                 </div>
                 <div class="form-floating mb-3">
-                    <textarea class="form-control" id="technologies" style="height: 100px"
-                        name="technologies"><%= project.technologies  %></textarea>
-                    <label for="technologies">Technologies</label>
+                    <textarea class="form-control" id="text" style="height: 300px" name="text"><%  for(let p of project.text) {%><%= p %>
+<% } %></textarea>
+                    <label for="text">Text</label>
                 </div>
                 <div class="form-floating mb-3">
-                    <textarea class="form-control" id="text" style="height: 100px"
-                        name="text"> <%= project.text %></textarea>
-                    <label for="text">Text</label>
+                    <textarea class="form-control" id="technologies" style="height: 300px" name="technologies"><%  for(let p of project.technologies) {%><%= p %>
+<% } %></textarea>
+                    <label for="technologies">Technologies</label>
                 </div>
                 <div class="mb-3">
                     <label for="link" class="form-label">Link</label>

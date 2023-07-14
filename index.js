@@ -80,6 +80,7 @@ app.use(
 
 app.use((req, res, next) => {
     res.locals.user = req.session.user
+    res.locals.title = ''
     next()
 });
 
@@ -91,7 +92,7 @@ app.get('/aboutme', (req, res) => {
     const data = {
         url: req.path
     }
-    res.render('components/aboutMe', { data })
+    res.render('components/aboutMe', { data, title: 'AboutMe' })
 });
 
 app.use('/admin', adminRoutes);

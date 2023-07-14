@@ -11,7 +11,7 @@ router.route('/')
         const data = {
             url: req.path
         }
-        res.render('components/user/login', { data })
+        res.render('components/user/login', { data, title: 'Login' })
     })
     .post(catchAsync(async (req, res) => {
         const { username, password } = req.body;

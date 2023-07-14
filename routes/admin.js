@@ -15,7 +15,7 @@ router.route('/projects/new')
         const data = {
             url: req.path
         }
-        res.render('components/projects/new', { data })
+        res.render('components/projects/new', { data, title: 'New project' })
     });
 
 router.route('/projects/:id/edit')
@@ -25,14 +25,19 @@ router.route('/projects/:id/edit')
         const data = {
             url: req.path
         }
-        res.render('components/projects/edit', { project, data })
+        res.render('components/projects/edit', { project, data, title: `Edit ${project.title}` })
     }));
 
 router.route('/projects')
     .post(isloggedIn, upload.single('image'), catchAsync(async (req, res) => {
-        const project = new Project(req.body);
+        const { title, description, link, repository } = req.body
+        const project = new Project({ title, description, link, repository });
         project.image.url = req.file.path;
-        project.image.filename = req.file.filename
+        project.image.filename = req.file.filename;
+        const text = req.body.text.split("\r\n");
+        const technologies = req.body.technologies.split("\r\n");
+        project.text = text;
+        project.technologies = technologies;
         await project.save();
         res.redirect('/projects',)
     }));
@@ -40,13 +45,19 @@ router.route('/projects')
 router.route('/projects/:id')
     .put(isloggedIn, upload.single('image'), catchAsync(async (req, res) => {
         const { id } = req.params;
-        const project = await Project.findByIdAndUpdate(id, req.body);
+        const { title, description, link, repository } = req.body
+        const project = await Project.findByIdAndUpdate(id, { title, description, link, repository });
         if (req.file) {
             const { path, filename } = req.file
             project.image.url = path;
             project.image.filename = filename;
             await project.save();
         }
+        const text = req.body.text.split("\r\n");
+        const technologies = req.body.technologies.split("\r\n");
+        project.text = text;
+        project.technologies = technologies;
+        await project.save();
         res.redirect(`/projects/${id}`);
     }))
     .delete(isloggedIn, catchAsync(async (req, res) => {

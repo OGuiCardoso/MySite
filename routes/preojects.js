@@ -11,7 +11,7 @@ router.route('/')
             url: req._parsedOriginalUrl.path
         }
 
-        res.render('components/projects/index', { projects, data });
+        res.render('components/projects/index', { projects, data, title: 'Projects' });
     }));
 
 router.route('/:id')
@@ -21,7 +21,7 @@ router.route('/:id')
         const data = {
             url: req._parsedOriginalUrl.path
         }
-        res.render('components/projects/show', { project, data });
+        res.render('components/projects/show', { project, data, title: project.title });
     }));
 
 

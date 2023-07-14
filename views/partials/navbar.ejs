@@ -1,4 +1,4 @@
-<nav class="navbar sticky-top navbar-expand-lg " data-bs-theme="dark">
+<nav class="navbar navbar-expand-lg " data-bs-theme="dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="#"><img class="brand"
                 src="https://res.cloudinary.com/dbu0iwr3h/image/upload/v1689174876/MySite/filename_5_ck2plw.png"
@@ -18,8 +18,9 @@
 
                     <a class="nav-link <%=data.url.includes('/new') ? 'active' : ""%>" href="/admin/projects/new">New
                         pojects</a>
-                    <form action="/logout" method="post">
-                        <button class="nav-link "> Logout</button>
+                    <form class="nav-link " action="/logout" method="post">
+                        <button style="border: none; background-color: transparent; color: #ff0015;;">
+                            Logout</button>
                     </form>
 
                     <% } %>

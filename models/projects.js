@@ -14,11 +14,11 @@ const projectSchema = new Schema({
         required: true
     },
     text: {
-        type: String,
+        type: [String],
         required: true
     },
     technologies: {
-        type: String,
+        type: [String],
         Required: true
     },
     repository: {

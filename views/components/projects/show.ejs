@@ -1,58 +1,68 @@
 <% layout('layout/boilerplate') %>
 
-    <div class="d-flex flex-column justify-content-center my-5 ">
-        <section class="mx-5">
-            <div class="d-flex justify-content-center mb-5">
-                <img src="<%= project.image.url %>" class="img-fluid mx-auto" alt="...">
-            </div>
-            <div class="d-flex justify-content-center mb-5">
-                <h1>
-                    <%= project.title %>
-                </h1>
-            </div>
-            <div class="mb-4">
-                <h2>Overview</h2>
+    <section class="my-5">
+        <div class="d-flex justify-content-center mb-5">
+            <img src="<%= project.image.url %>" class="img-fluid mx-auto" alt="...">
+        </div>
+        <div class="d-flex justify-content-center mb-5">
+            <h1>
+                <%= project.title %>
+            </h1>
+        </div>
+        <div class="mb-4">
+            <h2>Overview</h2>
+            <p>
+                <%=project.description %>
+            </p>
+        </div>
+        <div class="mb-4">
+            <h2>About</h2>
+            <% project.text.forEach(element=> { %>
                 <p>
-                    <%=project.description %>
+                    <%= element %>
                 </p>
-            </div>
-            <div class="mb-4">
-                <h2>About</h2>
-                <p>
-                    <%= project.text %>
-                </p>
-            </div>
-            <div class="mb-5">
-                <h2>Technologies</h2>
-                <p>
-                    <%=project.technologies %>
-                </p>
-            </div>
-            <div class="mb-3 d-flex">
-                <div>
-                    <img class="icon" src="../icons/github.png" alt=" git icon">
-                </div>
+                <% }); %>
 
-                <a href="<%= project.repository %>">Git repository</a>
-
+        </div>
+        <div class="mb-5">
+            <h2>Technologies</h2>
+            <% project.technologies.forEach(element=> { %>
+                <% if(element[0]==='-' ) {%>
+                    <p class="tech-item">
+                        <b>
+                            <%= element %>
+                        </b>
+                    </p>
+                    <% }else{ %>
+                        <p>
+                            <%= element %>
+                        </p>
+                        <% }}); %>
+        </div>
+        <div class="mb-3 d-flex">
+            <div>
+                <img class="icon" src="../icons/github.png" alt=" git icon">
             </div>
-            <% if(project.link){ %>
-                <div class="mb-5 d-flex">
-                    <div><img class="icon" src="../icons/link.png" alt="link icon"></div>
-                    <a href="<%= project.link %>">See website</a>
-                </div>
-                <% } %>
-                    <% if(user) {%>
-                        <div class="mt-5 d-flex" style="width: 150px; justify-content: space-between;">
-                            <div>
-                                <form action="/admin/projects/<%=project._id  %>?_method=DELETE" method="POST">
-                                    <button class="btn btn-danger">Delete</button>
-                                </form>
-                            </div>
-                            <div class="ml-5">
-                                <a class="btn btn-info" href="/admin/projects/<%=project._id %>/edit">edit</a>
-                            </div>
+
+            <a href="<%= project.repository %>">Git repository</a>
+
+        </div>
+        <% if(project.link){ %>
+            <div class="mb-5 d-flex">
+                <div><img class="icon" src="../icons/link.png" alt="link icon"></div>
+                <a href="<%= project.link %>">See website</a>
+            </div>
+            <% } %>
+                <% if(user) {%>
+                    <div class="mt-5 d-flex" style="width: 150px; justify-content: space-between;">
+                        <div>
+                            <form action="/admin/projects/<%=project._id  %>?_method=DELETE" method="POST">
+                                <button class="btn btn-danger">Delete</button>
+                            </form>
                         </div>
-                        <% } %>
-        </section>
-    </div>
+                        <div class="ml-5">
+                            <a class="btn btn-info" href="/admin/projects/<%=project._id %>/edit">edit</a>
+                        </div>
+                    </div>
+                    <% } %>
+    </section>
